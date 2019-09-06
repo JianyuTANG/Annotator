@@ -37,13 +37,13 @@ void PaintBoard::loadAnnotation()
     m_rects.clear();
     m_areas.clear();
     m_shapes.clear();
-    const std::vector<Annotation *>& list = m_annotationList->getList();
+    const std::vector<std::shared_ptr<Annotation>>& list = m_annotationList->getList();
     for(auto t: list)
     {
         if(t->m_annotationType == 1)
         {
             // 矩形检测标注
-            detect2d *temp = static_cast<detect2d*>(t);
+            std::shared_ptr<detect2d> temp = std::static_pointer_cast<detect2d>(t);
             QRect rect;
             rect.setCoords(temp->m_topLeftX,
                            temp->m_topLeftY,
@@ -56,7 +56,7 @@ void PaintBoard::loadAnnotation()
         else if(t->m_annotationType == 2 || t->m_annotationType == 3)
         {
             // 分割标注
-            segmentation2d *temp = static_cast<segmentation2d*>(t);
+            std::shared_ptr<segmentation2d> temp = std::static_pointer_cast<segmentation2d>(t);
             std::vector<QPoint> line(temp->m_points);
             m_areas.push_back(line);
             m_shapes.push_back(t->m_annotationType);
@@ -263,7 +263,7 @@ void PaintBoard::getAnnotation()
     if(m_drawType == 1)
     {
         QRect& lastRect = m_rects.back();
-        detect2d *temp = new detect2d(lastRect.x(),
+        std::shared_ptr<detect2d> temp = std::make_shared<detect2d>(lastRect.x(),
                                       lastRect.y(),
                                       lastRect.x() + lastRect.width(),
                                       lastRect.y() + lastRect.height(),
@@ -277,7 +277,7 @@ void PaintBoard::getAnnotation()
     else if(m_drawType == 2 || m_drawType == 3)
     {
         const std::vector<QPoint>& lastLine = m_areas.back();
-        segmentation2d *temp = new segmentation2d(lastLine,
+        std::shared_ptr<segmentation2d> temp = std::make_shared<segmentation2d>(lastLine,
                                                   annotation,
                                                   (m_shapes.size() - 1) % 20,
                                                   m_drawType);

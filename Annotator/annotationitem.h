@@ -4,6 +4,7 @@
 #include "annotation.h"
 #include <QWidget>
 #include <QListWidgetItem>
+#include <memory>
 
 
 class AnnotationItem : public QListWidgetItem
@@ -11,7 +12,7 @@ class AnnotationItem : public QListWidgetItem
 public:
     AnnotationItem():QListWidgetItem() {}
 
-    Annotation * annotation;
+    std::shared_ptr<Annotation> annotation;
 };
 
 #endif // ANNOTATIONITEM_H

@@ -4,6 +4,7 @@
 #include "annotation.h"
 #include <QObject>
 #include <vector>
+#include <memory>
 
 
 class AnnotationList: public QObject
@@ -14,26 +15,26 @@ public:
     AnnotationList();
 
     Annotation * addAnnotation(const int tlx, const int tly, const int brx, const int bry, const int c);
-    void addAnnotation(Annotation * const x);
-    void deleteAnnotation(Annotation * const x);
+    void addAnnotation(std::shared_ptr<Annotation> const x);
+    void deleteAnnotation(std::shared_ptr<Annotation> const x);
 
     bool back();
     bool forward();
 
-    const std::vector<Annotation *>& getList();
+    const std::vector<std::shared_ptr<Annotation>>& getList();
 
 signals:
     void popListItem();
-    void addListItem(Annotation*);
+    void addListItem(std::shared_ptr<Annotation>);
 
 
 private:
-    std::vector<Annotation *> m_list;
+    std::vector<std::shared_ptr<Annotation>> m_list;
 
-    std::vector<Annotation*> m_record;
+    std::vector<std::shared_ptr<Annotation>> m_record;
     std::vector<int> m_operRecord;
 
-    std::vector<Annotation *> m_undoRecord;
+    std::vector<std::shared_ptr<Annotation>> m_undoRecord;
     std::vector<int> m_undoOperRecord;
 
     int m_currentState;

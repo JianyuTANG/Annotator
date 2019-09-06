@@ -108,14 +108,14 @@ void MainWindow::selectFile()
     ui->listWidget->setVisible(true);
     ui->pushButton->setVisible(true);
     m_annotationList = new AnnotationList;
-    connect(m_annotationList, SIGNAL(addListItem(Annotation*)), this, SLOT(addListItem(Annotation*)));
+    connect(m_annotationList, SIGNAL(addListItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
     connect(m_annotationList, SIGNAL(popListItem()), this, SLOT(popListItem()));
     ui->listWidget->clear();
     m_paintBoard2d = new PaintBoard(this, m_image2d->getPixmap(), ui->textBrowser);
     m_paintBoard2d->registerAnnotationList(m_annotationList);
     ui->gridLayout->addWidget(m_paintBoard2d, 0, 0);
     connect(this, SIGNAL(chooseShape2d(int)), m_paintBoard2d, SLOT(drawShape(int)));
-    connect(m_paintBoard2d, SIGNAL(addItem(Annotation*)), this, SLOT(addListItem(Annotation*)));
+    connect(m_paintBoard2d, SIGNAL(addItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
     m_openStatus = 1;
 }
 
@@ -175,7 +175,7 @@ void MainWindow::on_actionForward_triggered()
 }
 
 
-void MainWindow::addListItem(Annotation *x)
+void MainWindow::addListItem(std::shared_ptr<Annotation> x)
 {
     AnnotationItem * item = new AnnotationItem;
     item->annotation = x;
@@ -218,7 +218,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 void MainWindow::on_pushButton_clicked()
 {
     QListWidgetItem *currentItem = ui->listWidget->currentItem();
-    Annotation *recordItem = static_cast<AnnotationItem*>(currentItem)->annotation;
+    std::shared_ptr<Annotation> recordItem = static_cast<AnnotationItem*>(currentItem)->annotation;
     m_annotationList->deleteAnnotation(recordItem);
     m_paintBoard2d->loadAnnotation();
     delete currentItem;

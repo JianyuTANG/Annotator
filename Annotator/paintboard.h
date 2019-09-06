@@ -53,7 +53,7 @@ private:
     void annotate(QMouseEvent *);
 
 signals:
-    void addItem(Annotation*);
+    void addItem(std::shared_ptr<Annotation>);
 
 public slots:
     void drawShape(int);

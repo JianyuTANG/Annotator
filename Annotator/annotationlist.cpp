@@ -11,7 +11,7 @@ Annotation *AnnotationList::addAnnotation(const int tlx, const int tly, const in
 
 }
 
-void AnnotationList::addAnnotation(Annotation * const x)
+void AnnotationList::addAnnotation(std::shared_ptr<Annotation> const x)
 {
     m_list.push_back(x);
     m_record.push_back(x);
@@ -20,7 +20,7 @@ void AnnotationList::addAnnotation(Annotation * const x)
     m_undoOperRecord.clear();
 }
 
-void AnnotationList::deleteAnnotation(Annotation * const x)
+void AnnotationList::deleteAnnotation(std::shared_ptr<Annotation> const x)
 {
     auto iter = std::find(m_list.begin(), m_list.end(), x);
     if(iter == m_list.end())
@@ -87,7 +87,7 @@ bool AnnotationList::forward()
     return true;
 }
 
-const std::vector<Annotation *> &AnnotationList::getList()
+const std::vector<std::shared_ptr<Annotation>> &AnnotationList::getList()
 {
     return m_list;
 }
