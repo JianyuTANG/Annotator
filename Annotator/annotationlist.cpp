@@ -44,14 +44,29 @@ bool AnnotationList::back()
     switch (m_operRecord.back())
     {
     case 1:
-        m_list.pop_back();
-        emit popListItem();
+    {
+        auto t = m_record.back();
+        int len = m_list.size();
+        int i = 0;
+        for(; i < len; i++)
+        {
+            if(m_list[i] == t)
+            {
+                break;
+            }
+        }
+        auto iter = std::find(m_list.begin(), m_list.end(), t);
+        m_list.erase(iter);
+        emit popListItem(i);
         break;
+    }
     case 2:
+    {
         auto x = m_record.back();
         m_list.push_back(x);
         emit addListItem(x);
         break;
+    }
     }
     auto t = m_record.back();
     int op = m_operRecord.back();
@@ -72,7 +87,7 @@ bool AnnotationList::forward()
     {
     case 2:
         m_list.pop_back();
-        emit popListItem();
+        emit popListItem(m_list.size() - 1);
         break;
     case 1:
         auto x = m_undoRecord.back();

@@ -24,7 +24,7 @@ public:
     const std::vector<std::shared_ptr<Annotation>>& getList();
 
 signals:
-    void popListItem();
+    void popListItem(int);
     void addListItem(std::shared_ptr<Annotation>);
 
 

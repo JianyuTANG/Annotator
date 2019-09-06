@@ -89,14 +89,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *e)
 {
-    if(m_openStatus == 1)
-    {
 
-    }
-    else
-    {
-
-    }
 }
 
 void MainWindow::selectFile()
@@ -109,7 +102,7 @@ void MainWindow::selectFile()
     ui->pushButton->setVisible(true);
     m_annotationList = new AnnotationList;
     connect(m_annotationList, SIGNAL(addListItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
-    connect(m_annotationList, SIGNAL(popListItem()), this, SLOT(popListItem()));
+    connect(m_annotationList, SIGNAL(popListItem(int)), this, SLOT(popListItem(int)));
     ui->listWidget->clear();
     m_paintBoard2d = new PaintBoard(this, m_image2d->getPixmap(), ui->textBrowser);
     m_paintBoard2d->registerAnnotationList(m_annotationList);
@@ -200,14 +193,15 @@ void MainWindow::addListItem(std::shared_ptr<Annotation> x)
     ui->listWidget->addItem(item);
 }
 
-void MainWindow::popListItem()
+void MainWindow::popListItem(int i)
 {
-    ui->listWidget->selectAll();
-    QList <QListWidgetItem*> items = ui->listWidget->selectedItems();
-    qDebug()<<items.size();
-    //QListWidgetItem* item = items.back();
-    //delete item;
-    ui->listWidget->clearSelection();
+    qDebug()<<9090;
+    int num = ui->listWidget->count();
+    if(i >= 0 && i < num)
+    {
+        auto item = ui->listWidget->item(i);
+        delete item;
+    }
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)

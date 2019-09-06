@@ -60,7 +60,7 @@ private slots:
     void on_actionForward_triggered();
 
     void addListItem(std::shared_ptr<Annotation>);
-    void popListItem();
+    void popListItem(int);
 
     void on_listWidget_itemClicked(QListWidgetItem *item);
 
