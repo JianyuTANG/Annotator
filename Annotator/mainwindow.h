@@ -1,0 +1,74 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include "image2d.h"
+#include "paintboard.h"
+#include <QMainWindow>
+#include <QGraphicsScene>
+#include <vector>
+#include <QListWidgetItem>
+
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+protected:
+    void paintEvent(QPaintEvent *);          // 重写窗体重绘事件
+    void mousePressEvent(QMouseEvent *);     // 重写鼠标按下事件
+    void mouseReleaseEvent(QMouseEvent *);   // 重写鼠标释放事件
+    void mouseMoveEvent(QMouseEvent *);      // 重写鼠标移动事件
+
+private:
+    Ui::MainWindow *ui;
+
+    Image2D *m_image2d;
+
+    AnnotationList *m_annotationList;
+
+    QPixmap m_pic2d;
+    PaintBoard *m_paintBoard2d;
+
+    int m_drawType;
+    bool m_leftPress;
+    int m_openStatus;
+
+    std::vector<int> m_record;
+
+    std::vector<int> m_shapes;
+    std::vector<QRect> m_rects;
+
+signals:
+    void chooseShape2d(int);
+
+private slots:
+    void selectFile();
+    void selectFolder();
+
+    void drawRect();
+    void drawAreaSquare();
+    void drawAreaRound();
+    void on_actionBack_triggered();
+    void on_actionForward_triggered();
+
+    void addListItem(Annotation*);
+    void popListItem();
+
+    void on_listWidget_itemClicked(QListWidgetItem *item);
+
+    void on_pushButton_clicked();
+
+public slots:
+
+
+};
+
+#endif // MAINWINDOW_H

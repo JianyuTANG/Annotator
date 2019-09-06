@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>icon/Save.png</file>
+        <file>icon/bigsquare.ico</file>
+        <file>icon/smallsquare.png</file>
+        <file>icon/roundPaint.png</file>
+        <file>icon/squarePaint.png</file>
+    </qresource>
+</RCC>
