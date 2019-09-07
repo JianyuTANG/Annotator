@@ -173,22 +173,19 @@ void MainWindow::addListItem(std::shared_ptr<Annotation> x)
     AnnotationItem * item = new AnnotationItem;
     item->annotation = x;
     item->setText(x->m_objectType);
-
-    /*
     if(x->m_annotationType == 1)
     {
         // 2D矩形检测标注
-        item->setIcon(QIcon(":/icon/bigsquare.ico"));
+        item->setIcon(QIcon(":/icon/icon/bigsquare.ico"));
     }
-    else if(x->m_annotationType == 4)
+    else if(x->m_annotationType == 2)
     {
-        item->setIcon(QIcon(":/icon/squarePaint.png"));
+        item->setIcon(QIcon(":/icon/icon/squarePaint.png"));
     }
     else if(x->m_annotationType == 3)
     {
-        item->setIcon(QIcon(":/icon/roundPaint.png"));
+        item->setIcon(QIcon(":/icon/icon/roundPaint.png"));
     }
-    */
     qDebug()<<999;
     ui->listWidget->addItem(item);
 }

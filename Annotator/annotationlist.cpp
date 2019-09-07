@@ -30,7 +30,6 @@ void AnnotationList::deleteAnnotation(std::shared_ptr<Annotation> const x)
     m_list.erase(iter);
     m_record.push_back(x);
     m_operRecord.push_back(2);
-    m_currentState++;
     m_undoRecord.clear();
     m_undoOperRecord.clear();
 }
@@ -86,14 +85,29 @@ bool AnnotationList::forward()
     switch (m_undoOperRecord.back())
     {
     case 2:
-        m_list.pop_back();
-        emit popListItem(m_list.size() - 1);
+    {
+        auto t = m_undoRecord.back();
+        int len = m_list.size();
+        int i = 0;
+        for(; i < len; i++)
+        {
+            if(m_list[i] == t)
+            {
+                break;
+            }
+        }
+        auto iter = std::find(m_list.begin(), m_list.end(), t);
+        m_list.erase(iter);
+        emit popListItem(i);
         break;
+    }
     case 1:
+    {
         auto x = m_undoRecord.back();
         m_list.push_back(x);
         emit addListItem(x);
         break;
+    }
     }
     m_record.push_back(m_undoRecord.back());
     m_operRecord.push_back(m_undoOperRecord.back());
