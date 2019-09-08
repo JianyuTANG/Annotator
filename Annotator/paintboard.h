@@ -7,10 +7,13 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <vector>
+#include <QPixmap>
+
 
 class PaintBoard : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit PaintBoard(QWidget *parent = nullptr,
                         QPixmap *picture = nullptr,
@@ -19,6 +22,8 @@ public:
     void registerAnnotationList(AnnotationList *const x);
 
     void loadAnnotation();
+
+    void loadImage(QPixmap *picture);
 
 protected:
     void paintEvent(QPaintEvent *);          // 重写窗体重绘事件
@@ -58,7 +63,7 @@ signals:
 public slots:
     void drawShape(int);
 
-    void setWidth(int);
+    void setWidth(int);  // 设置画笔宽度
 
 private slots:
     void getAnnotation();

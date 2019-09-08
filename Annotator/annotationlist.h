@@ -5,6 +5,8 @@
 #include <QObject>
 #include <vector>
 #include <memory>
+#include <QPixmap>
+
 
 
 class AnnotationList: public QObject
@@ -20,6 +22,8 @@ public:
 
     bool back();
     bool forward();
+
+    void clear();
 
     const std::vector<std::shared_ptr<Annotation>>& getList();
 

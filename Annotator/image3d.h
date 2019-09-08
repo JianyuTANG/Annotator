@@ -2,6 +2,7 @@
 #define IMAGE3D_H
 
 #include <QObject>
+#include <QPixmap>
 #include <vector>
 
 

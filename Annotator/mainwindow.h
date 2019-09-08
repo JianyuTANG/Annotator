@@ -68,6 +68,10 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_actionPrevious_triggered();
+
+    void on_actionNext_triggered();
+
 public slots:
 
 

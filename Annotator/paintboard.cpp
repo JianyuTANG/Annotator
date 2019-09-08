@@ -65,6 +65,21 @@ void PaintBoard::loadAnnotation()
     update();
 }
 
+void PaintBoard::loadImage(QPixmap *picture)
+{
+    m_image = picture;
+    m_image_x = picture->width();
+    m_image_y = picture->height();
+
+    m_shapes.clear();
+    m_rects.clear();
+    m_areas.clear();
+
+    m_leftPress = false;
+
+    update();
+}
+
 
 void PaintBoard::paintEvent(QPaintEvent *)
 {

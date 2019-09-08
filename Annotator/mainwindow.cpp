@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_image2d = new Image2D(this);
     connect(ui->OpenFile, SIGNAL(triggered()), this, SLOT(selectFile()));
-    //connect(ui->OpenFolder, SIGNAL(triggered()), this, SLOT(selectFolder()));
+    connect(ui->actionFolder2D, SIGNAL(triggered()), this, SLOT(selectFolder()));
 
     connect(ui->actionRectangle, SIGNAL(triggered()), this, SLOT(drawRect()));
     connect(ui->actionRoundPaint, SIGNAL(triggered()), this, SLOT(drawAreaRound()));
@@ -108,22 +108,26 @@ void MainWindow::selectFile()
     ui->listWidget->setVisible(true);
     ui->pushButton->setVisible(true);
     ui->listWidget->clear();
-    ui->gridLayout->addWidget(m_paintBoard2d, 0, 0);
 
+    /*
     if(m_annotationList != nullptr)
     {
         delete m_annotationList;
     }
+    */
     m_annotationList = new AnnotationList;
     connect(m_annotationList, SIGNAL(addListItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
     connect(m_annotationList, SIGNAL(popListItem(int)), this, SLOT(popListItem(int)));
 
+    /*
     if(m_paintBoard2d != nullptr)
     {
         delete m_paintBoard2d;
     }
+    */
     m_paintBoard2d = new PaintBoard(this, m_image2d->getPixmap(), ui->textBrowser);
     m_paintBoard2d->registerAnnotationList(m_annotationList);
+    ui->gridLayout->addWidget(m_paintBoard2d, 0, 0);
     connect(this, SIGNAL(chooseShape2d(int)), m_paintBoard2d, SLOT(drawShape(int)));
     connect(m_paintBoard2d, SIGNAL(addItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
 
@@ -132,7 +136,33 @@ void MainWindow::selectFile()
 
 void MainWindow::selectFolder()
 {
+    if(m_openStatus != 0)
+    {
+        closeCurrent();
+    }
 
+    m_image2d->selectFolder();
+
+    ui->label->setVisible(true);
+    ui->label_2->setVisible(true);
+    ui->textBrowser->setVisible(true);
+    ui->listWidget->setVisible(true);
+    ui->pushButton->setVisible(true);
+    ui->listWidget->clear();
+    ui->actionNext->setEnabled(true);
+    ui->actionPrevious->setEnabled(true);
+
+    m_annotationList = new AnnotationList;
+    connect(m_annotationList, SIGNAL(addListItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
+    connect(m_annotationList, SIGNAL(popListItem(int)), this, SLOT(popListItem(int)));
+
+    m_paintBoard2d = new PaintBoard(this, m_image2d->getPixmap(), ui->textBrowser);
+    m_paintBoard2d->registerAnnotationList(m_annotationList);
+    ui->gridLayout->addWidget(m_paintBoard2d, 0, 0);
+    connect(this, SIGNAL(chooseShape2d(int)), m_paintBoard2d, SLOT(drawShape(int)));
+    connect(m_paintBoard2d, SIGNAL(addItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
+
+    m_openStatus = 2;
 }
 
 void MainWindow::selectFolder3D()
@@ -263,4 +293,41 @@ void MainWindow::on_pushButton_clicked()
     m_annotationList->deleteAnnotation(recordItem);
     m_paintBoard2d->loadAnnotation();
     delete currentItem;
+}
+
+void MainWindow::on_actionPrevious_triggered()
+{
+    if(m_openStatus != 2)
+    {
+        return;
+    }
+
+
+    if(m_image2d->prevImg())
+    {
+        // TODO: 提示是否需要保存
+
+        m_paintBoard2d->loadImage(m_image2d->getPixmap());
+        m_annotationList->clear();
+
+        ui->listWidget->clear();
+    }
+}
+
+void MainWindow::on_actionNext_triggered()
+{
+    if(m_openStatus != 2)
+    {
+        return;
+    }
+
+    if(m_image2d->nextImg())
+    {
+        // TODO: 提示是否需要保存
+
+        m_paintBoard2d->loadImage(m_image2d->getPixmap());
+        m_annotationList->clear();
+
+        ui->listWidget->clear();
+    }
 }

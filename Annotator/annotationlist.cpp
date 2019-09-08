@@ -1,6 +1,7 @@
 #include "annotationlist.h"
 #include <algorithm>
 #include <QDebug>
+#include <QPixmap>
 
 
 AnnotationList::AnnotationList():QObject (), m_currentState(-1) {}
@@ -114,6 +115,16 @@ bool AnnotationList::forward()
     m_undoRecord.pop_back();
     m_undoOperRecord.pop_back();
     return true;
+}
+
+void AnnotationList::clear()
+{
+    m_currentState = -1;
+    m_list.clear();
+    m_record.clear();
+    m_operRecord.clear();
+    m_undoRecord.clear();
+    m_undoOperRecord.clear();
 }
 
 const std::vector<std::shared_ptr<Annotation>> &AnnotationList::getList()
