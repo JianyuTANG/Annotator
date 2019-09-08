@@ -31,7 +31,8 @@ SOURCES += \
     paintboard.cpp \
     annotation.cpp \
     annotationlist.cpp \
-    annotationitem.cpp
+    annotationitem.cpp \
+    image3d.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     paintboard.h \
     annotation.h \
     annotationlist.h \
-    annotationitem.h
+    annotationitem.h \
+    image3d.h
 
 FORMS += \
         mainwindow.ui

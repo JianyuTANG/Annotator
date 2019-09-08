@@ -5,5 +5,11 @@
         <file>icon/smallsquare.png</file>
         <file>icon/roundPaint.png</file>
         <file>icon/squarePaint.png</file>
+        <file>icon/arrow_left.png</file>
+        <file>icon/arrow_right.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>icon/arrow_left.png</file>
+        <file>icon/arrow_right.png</file>
     </qresource>
 </RCC>

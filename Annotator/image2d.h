@@ -22,7 +22,6 @@ private:
     QImage *m_image;
     QPixmap *m_imageForShow;
 
-
     void loadImage();
 };
 

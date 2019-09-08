@@ -142,9 +142,16 @@
     <property name="title">
      <string>文件</string>
     </property>
+    <widget class="QMenu" name="menu_2">
+     <property name="title">
+      <string>打开文件夹</string>
+     </property>
+     <addaction name="actionFolder2D"/>
+     <addaction name="actionFolder3D"/>
+    </widget>
     <addaction name="separator"/>
     <addaction name="OpenFile"/>
-    <addaction name="OpenFolder"/>
+    <addaction name="menu_2"/>
     <addaction name="action_2"/>
    </widget>
    <widget class="QMenu" name="edit_menu">
@@ -168,6 +175,9 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -177,6 +187,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionPrevious"/>
+   <addaction name="actionNext"/>
+   <addaction name="separator"/>
    <addaction name="actionRectangle"/>
    <addaction name="separator"/>
    <addaction name="actionSquarePaint"/>
@@ -185,11 +198,6 @@
   <action name="OpenFile">
    <property name="text">
     <string>打开文件</string>
-   </property>
-  </action>
-  <action name="OpenFolder">
-   <property name="text">
-    <string>打开文件夹</string>
    </property>
   </action>
   <action name="action_2">
@@ -252,6 +260,40 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionNext">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icon.qrc">
+     <normaloff>:/icon/icon/arrow_right.png</normaloff>:/icon/icon/arrow_right.png</iconset>
+   </property>
+   <property name="text">
+    <string>下一张</string>
+   </property>
+  </action>
+  <action name="actionPrevious">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icon.qrc">
+     <normaloff>:/icon/icon/arrow_left.png</normaloff>:/icon/icon/arrow_left.png</iconset>
+   </property>
+   <property name="text">
+    <string>上一张</string>
+   </property>
+  </action>
+  <action name="actionFolder2D">
+   <property name="text">
+    <string>打开2D图片</string>
+   </property>
+  </action>
+  <action name="actionFolder3D">
+   <property name="text">
+    <string>打开3D图片</string>
    </property>
   </action>
  </widget>

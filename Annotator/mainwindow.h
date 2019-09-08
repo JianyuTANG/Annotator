@@ -52,6 +52,8 @@ signals:
 private slots:
     void selectFile();
     void selectFolder();
+    void selectFolder3D();
+    void closeCurrent();
 
     void drawRect();
     void drawAreaSquare();
