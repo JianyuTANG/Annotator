@@ -1,3 +1,4 @@
+
 #ifndef PAINTBOARD_H
 #define PAINTBOARD_H
 

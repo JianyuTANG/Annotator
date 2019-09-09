@@ -53,4 +53,10 @@ public:
     ~segmentation2d() {}
 };
 
+class detect3d: public Annotation
+{
+public:
+
+};
+
 #endif // ANNOTATION_H

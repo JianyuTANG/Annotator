@@ -167,7 +167,10 @@ void MainWindow::selectFolder()
 
 void MainWindow::selectFolder3D()
 {
-
+    if(m_openStatus != 0)
+    {
+        closeCurrent();
+    }
 }
 
 void MainWindow::closeCurrent()
@@ -199,7 +202,7 @@ void MainWindow::closeCurrent()
 
 void MainWindow::drawRect()
 {
-    if(m_openStatus == 1)
+    if(m_openStatus == 1 || m_openStatus == 2)
     {
         emit chooseShape2d(1);
     }
@@ -207,7 +210,7 @@ void MainWindow::drawRect()
 
 void MainWindow::drawAreaSquare()
 {
-    if(m_openStatus == 1)
+    if(m_openStatus == 1 || m_openStatus == 2)
     {
         emit chooseShape2d(2);
     }
@@ -215,7 +218,7 @@ void MainWindow::drawAreaSquare()
 
 void MainWindow::drawAreaRound()
 {
-    if(m_openStatus == 1)
+    if(m_openStatus == 1 || m_openStatus == 2)
     {
         emit chooseShape2d(3);
     }
@@ -224,7 +227,7 @@ void MainWindow::drawAreaRound()
 
 void MainWindow::on_actionBack_triggered()
 {
-    if(m_openStatus == 1)
+    if(m_openStatus == 1 || m_openStatus == 2)
     {
         // 2D 图片的情况
         if(m_annotationList->back())
@@ -237,7 +240,7 @@ void MainWindow::on_actionBack_triggered()
 
 void MainWindow::on_actionForward_triggered()
 {
-    if(m_openStatus == 1)
+    if(m_openStatus == 1 || m_openStatus == 2)
     {
         // 2D 图片的情况
         if(m_annotationList->forward())

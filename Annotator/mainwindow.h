@@ -3,6 +3,7 @@
 
 #include "image2d.h"
 #include "paintboard.h"
+#include "paintboard3d.h"
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <vector>
@@ -36,6 +37,8 @@ private:
 
     QPixmap m_pic2d;
     PaintBoard *m_paintBoard2d;
+
+    PaintBoard3D *m_paintBoard3d;
 
     int m_drawType;
     bool m_leftPress;
