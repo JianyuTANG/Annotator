@@ -18,23 +18,29 @@ void Image3D::selectFolder()
                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
                 );
 
-    QString head,file;
-    std::string search = m_dir.toStdString() + "*.jpg";
+    std::string search = m_dir.toStdString() + "/*.jpg";
     const char *to_search = search.c_str();                      //在input文件夹下搜索jpg文件
+    //qDebug() << to_search;
     long handle;                                                //用于查找的句柄
     struct _finddata_t fileinfo;                                //存储文件信息的结构体
     handle = _findfirst(to_search, &fileinfo);                     //第一次查找
     if(handle == -1)
+    {
+        //qDebug() << to_search;
         return;
-    printf("%s\n",fileinfo.name);                               //打印出找到的文件的文件名
-    head = "input\\";
+    }
+    QString head, file;
+    head = m_dir + "/";
     file = fileinfo.name;
+    QString t("777");
+    //qDebug() << head + file;
     m_filenameList.push_back(head + file);
-    while(!_findnext(handle,&fileinfo))                         //查找其他符合的文件
+
+    while(!_findnext(handle, &fileinfo))                         //查找其他符合的文件
     {
         file = fileinfo.name;
         m_filenameList.push_back(head + file);
-        printf("%s\n",fileinfo.name);
+        // printf("%s\n", fileinfo.name);
     }
     _findclose(handle);
 
@@ -55,6 +61,36 @@ const std::vector<QPixmap> &Image3D::getY() const
 const std::vector<QPixmap> &Image3D::getZ() const
 {
     return m_imageZ;
+}
+
+const position &Image3D::fromXtoY(const int n, const int x, const int y) const
+{
+
+}
+
+const position &Image3D::fromXtoZ(const int n, const int x, const int y) const
+{
+
+}
+
+const position &Image3D::fromYtoX(const int n, const int x, const int y) const
+{
+
+}
+
+const position &Image3D::fromYtoZ(const int n, const int x, const int y) const
+{
+
+}
+
+const position &Image3D::fromZtoX(const int n, const int x, const int y) const
+{
+
+}
+
+const position &Image3D::fromZtoY(const int n, const int x, const int y) const
+{
+
 }
 
 void Image3D::load_image()

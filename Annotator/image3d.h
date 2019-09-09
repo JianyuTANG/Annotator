@@ -6,6 +6,14 @@
 #include <vector>
 
 
+struct position
+{
+    int num;
+    int x;
+    int y;
+};
+
+
 class Image3D : public QObject
 {
     Q_OBJECT
@@ -18,6 +26,12 @@ public:
     const std::vector<QPixmap>& getY() const;
     const std::vector<QPixmap>& getZ() const;
 
+    const position& fromXtoY(const int n, const int x, const int y) const;
+    const position& fromXtoZ(const int n, const int x, const int y) const;
+    const position& fromYtoX(const int n, const int x, const int y) const;
+    const position& fromYtoZ(const int n, const int x, const int y) const;
+    const position& fromZtoX(const int n, const int x, const int y) const;
+    const position& fromZtoY(const int n, const int x, const int y) const;
 
 private:
     QString m_dir; // 路径
