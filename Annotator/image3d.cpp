@@ -63,34 +63,58 @@ const std::vector<QPixmap> &Image3D::getZ() const
     return m_imageZ;
 }
 
-const position &Image3D::fromXtoY(const int n, const int x, const int y) const
+const position Image3D::fromXtoY(const int n, const int x, const int y) const
 {
-
+    position ans;
+    ans.num = y;
+    ans.x = x;
+    ans.y = n;
+    return ans;
 }
 
-const position &Image3D::fromXtoZ(const int n, const int x, const int y) const
+const position Image3D::fromXtoZ(const int n, const int x, const int y) const
 {
-
+    position ans;
+    ans.num = x;
+    ans.x = m_imageListX[0].height() - 1 - y;
+    ans.y = n;
+    return ans;
 }
 
-const position &Image3D::fromYtoX(const int n, const int x, const int y) const
+const position Image3D::fromYtoX(const int n, const int x, const int y) const
 {
-
+    position ans;
+    ans.num = y;
+    ans.x = x;
+    ans.y = n;
+    return ans;
 }
 
-const position &Image3D::fromYtoZ(const int n, const int x, const int y) const
+const position Image3D::fromYtoZ(const int n, const int x, const int y) const
 {
-
+    position ans;
+    ans.num = x;
+    ans.x = m_imageListX[0].height() - 1 - n;
+    ans.y = y;
+    return ans;
 }
 
-const position &Image3D::fromZtoX(const int n, const int x, const int y) const
+const position Image3D::fromZtoX(const int n, const int x, const int y) const
 {
-
+    position ans;
+    ans.num = y;
+    ans.x = n;
+    ans.y = m_imageListX[0].height() - 1 - x;
+    return ans;
 }
 
-const position &Image3D::fromZtoY(const int n, const int x, const int y) const
+const position Image3D::fromZtoY(const int n, const int x, const int y) const
 {
-
+    position ans;
+    ans.num = m_imageListX[0].height() - 1 - x;
+    ans.x = n;
+    ans.y = y;
+    return ans;
 }
 
 void Image3D::load_image()
@@ -132,7 +156,7 @@ void Image3D::load_image()
         {
             for(int k = 0; k < height; k++)
             {
-                temp.setPixel(j, k, m_imageListX[j].pixel(i, k));
+                temp.setPixel(j, k, m_imageListX[k].pixel(i, width - 1 - j));
             }
         }
         m_imageListZ.push_back(temp);
