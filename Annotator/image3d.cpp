@@ -9,7 +9,7 @@ Image3D::Image3D(QObject *parent) : QObject(parent)
 
 }
 
-void Image3D::selectFolder()
+bool Image3D::selectFolder()
 {
     m_dir = QFileDialog::getExistingDirectory(
                 nullptr,
@@ -27,7 +27,7 @@ void Image3D::selectFolder()
     if(handle == -1)
     {
         //qDebug() << to_search;
-        return;
+        return false;
     }
     QString head, file;
     head = m_dir + "/";
@@ -46,6 +46,8 @@ void Image3D::selectFolder()
 
     // 加载图片
     load_image();
+
+    return true;
 }
 
 const std::vector<QPixmap> &Image3D::getX() const

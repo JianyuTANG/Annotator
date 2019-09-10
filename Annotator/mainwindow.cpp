@@ -171,6 +171,29 @@ void MainWindow::selectFolder3D()
     {
         closeCurrent();
     }
+
+    if(!m_image3d->selectFolder())
+    {
+        return;
+    }
+
+    ui->label->setVisible(true);
+    ui->label_2->setVisible(true);
+    ui->textBrowser->setVisible(true);
+    ui->listWidget->setVisible(true);
+    ui->pushButton->setVisible(true);
+    ui->listWidget->clear();
+
+    m_annotationList = new AnnotationList;
+
+    m_interface3d = new Interface3D(this,
+                                    m_image3d->getX(),
+                                    m_image3d->getY(),
+                                    m_image3d->getZ(),
+                                    m_annotationList,
+                                    ui->gridLayout);
+
+    m_openStatus = 3;
 }
 
 void MainWindow::closeCurrent()

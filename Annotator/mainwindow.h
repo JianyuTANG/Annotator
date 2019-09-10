@@ -2,8 +2,10 @@
 #define MAINWINDOW_H
 
 #include "image2d.h"
+#include "image3d.h"
 #include "paintboard.h"
 #include "paintboard3d.h"
+#include "interface3d.h"
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <vector>
@@ -32,13 +34,14 @@ private:
     Ui::MainWindow *ui;
 
     Image2D *m_image2d;
+    Image3D *m_image3d;
 
     AnnotationList *m_annotationList;
 
     QPixmap m_pic2d;
     PaintBoard *m_paintBoard2d;
 
-    PaintBoard3D *m_paintBoard3d;
+    Interface3D *m_interface3d;
 
     int m_drawType;
     bool m_leftPress;
