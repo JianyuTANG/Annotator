@@ -22,9 +22,9 @@ public:
 
     bool selectFolder();
 
-    std::vector<QPixmap>* getX() const;
-    std::vector<QPixmap>* getY() const;
-    std::vector<QPixmap>* getZ() const;
+    const std::vector<QPixmap*>* getX() const;
+    const std::vector<QPixmap*>* getY() const;
+    const std::vector<QPixmap*>* getZ() const;
 
     const position fromXtoY(const int n, const int x, const int y) const;
     const position fromXtoZ(const int n, const int x, const int y) const;
@@ -38,7 +38,7 @@ private:
     std::vector<QString> m_filenameList;  // 图片文件列表
 
     std::vector<QImage> m_imageListX, m_imageListY, m_imageListZ;
-    std::vector<QPixmap> m_imageX, m_imageY, m_imageZ;
+    std::vector<QPixmap*> m_imageX, m_imageY, m_imageZ;
 
     void load_image();
 

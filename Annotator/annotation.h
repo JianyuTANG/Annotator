@@ -56,7 +56,17 @@ public:
 class detect3d: public Annotation
 {
 public:
+    int m_tlx, m_tly, m_tln, m_brx, m_bry, m_brn;
 
+    detect3d(const int tlx, const int tly, const int tln, const int brx, const int bry, const int brn,
+             const QString& type, const int c, const int shape):
+        Annotation(shape, type),
+        m_tlx(tlx),
+        m_tly(tly),
+        m_tln(tln),
+        m_brx(brx),
+        m_bry(bry),
+        m_brn(brn) {}
 };
 
 #endif // ANNOTATION_H

@@ -50,19 +50,19 @@ bool Image3D::selectFolder()
     return true;
 }
 
-const std::vector<QPixmap> &Image3D::getX() const
+const std::vector<QPixmap*> *Image3D::getX() const
 {
-    return m_imageX;
+    return &m_imageX;
 }
 
-const std::vector<QPixmap> &Image3D::getY() const
+const std::vector<QPixmap*> *Image3D::getY() const
 {
-    return m_imageY;
+    return &m_imageY;
 }
 
-const std::vector<QPixmap> &Image3D::getZ() const
+const std::vector<QPixmap*> *Image3D::getZ() const
 {
-    return m_imageZ;
+    return &m_imageZ;
 }
 
 const position Image3D::fromXtoY(const int n, const int x, const int y) const
@@ -126,7 +126,9 @@ void Image3D::load_image()
     {
         QImage temp(t);
         m_imageListX.push_back(temp);
-        m_imageX.push_back(QPixmap::fromImage(temp));
+        QPixmap *tempPix = new QPixmap;
+        *tempPix = QPixmap::fromImage(temp);
+        m_imageX.push_back(tempPix);
     }
 
     // 计算Y方向图片
@@ -145,7 +147,9 @@ void Image3D::load_image()
             }
         }
         m_imageListY.push_back(temp);
-        m_imageY.push_back(QPixmap::fromImage(temp));
+        QPixmap *tempPix = new QPixmap;
+        *tempPix = QPixmap::fromImage(temp);
+        m_imageY.push_back(tempPix);
     }
 
     // 计算Z方向图片
@@ -162,6 +166,8 @@ void Image3D::load_image()
             }
         }
         m_imageListZ.push_back(temp);
-        m_imageZ.push_back(QPixmap::fromImage(temp));
+        QPixmap *tempPix = new QPixmap;
+        *tempPix = QPixmap::fromImage(temp);
+        m_imageZ.push_back(tempPix);
     }
 }

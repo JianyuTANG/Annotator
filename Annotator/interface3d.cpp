@@ -2,9 +2,9 @@
 
 
 Interface3D::Interface3D(QWidget *parent,
-                         std::vector<QPixmap> *imgX,
-                         std::vector<QPixmap> *imgY,
-                         std::vector<QPixmap> *imgZ,
+                         const std::vector<QPixmap*> *imgX,
+                         const std::vector<QPixmap*> *imgY,
+                         const std::vector<QPixmap*> *imgZ,
                          AnnotationList *ann,
                          QGridLayout *l):
     QWidget(parent),
@@ -15,11 +15,11 @@ Interface3D::Interface3D(QWidget *parent,
     m_layout(l)
 {
     m_x = new PaintBoard3D(this);
-    m_x->loadImage(&(m_imageX->at(0)));
+    m_x->loadImage((*m_imageX)[0]);
     m_y = new PaintBoard3D(this);
-    m_y->loadImage(&(m_imageY->at(0)));
+    m_y->loadImage((*m_imageY)[0]);
     m_z = new PaintBoard3D(this);
-    m_z->loadImage(&(m_imageZ->at(0)));
+    m_z->loadImage((*m_imageZ)[0]);
 
     m_layout->addWidget(m_x, 0, 0);
     m_layout->addWidget(m_y, 0, 1);

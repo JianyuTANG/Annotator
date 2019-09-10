@@ -30,8 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     m_image2d = new Image2D(this);
+    m_image3d = new Image3D(this);
+
     connect(ui->OpenFile, SIGNAL(triggered()), this, SLOT(selectFile()));
     connect(ui->actionFolder2D, SIGNAL(triggered()), this, SLOT(selectFolder()));
+    connect(ui->actionFolder3D, SIGNAL(triggered()), this, SLOT(selectFolder3D()));
 
     connect(ui->actionRectangle, SIGNAL(triggered()), this, SLOT(drawRect()));
     connect(ui->actionRoundPaint, SIGNAL(triggered()), this, SLOT(drawAreaRound()));

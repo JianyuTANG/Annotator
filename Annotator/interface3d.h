@@ -11,9 +11,9 @@ class Interface3D : public QWidget
     Q_OBJECT
 public:
     explicit Interface3D(QWidget *parent = nullptr,
-                         std::vector<QPixmap>* imgX = nullptr,
-                         std::vector<QPixmap>* imgY = nullptr,
-                         std::vector<QPixmap>* imgZ = nullptr,
+                         const std::vector<QPixmap*>* imgX = nullptr,
+                         const std::vector<QPixmap*>* imgY = nullptr,
+                         const std::vector<QPixmap*>* imgZ = nullptr,
                          AnnotationList *ann = nullptr,
                          QGridLayout *l = nullptr
             );
@@ -23,7 +23,7 @@ private:
 
     PaintBoard3D *m_x, *m_y, *m_z;
 
-    std::vector<QPixmap> *m_imageX, *m_imageY, *m_imageZ;
+    const std::vector<QPixmap*> *m_imageX, *m_imageY, *m_imageZ;
 
     AnnotationList *m_annotationList;
 

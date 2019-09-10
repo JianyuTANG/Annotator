@@ -20,12 +20,26 @@ protected:
     void mouseMoveEvent(QMouseEvent *);      // 重写鼠标移动事件
 
 signals:
+    void addItem(std::shared_ptr<Annotation>);
+    void mainFinish(int);
+    void finalFinish();
+    void mousePos(QString);
 
 public slots:
 
+private slots:
+    void getAnnotation();
+    void cancelAnnotation();
+
 private:
+    bool m_isMain;        // 当前投影图像是否是主操作图像
     int m_drawType;       // 当前画的图像类型
     bool m_leftPress;     // 鼠标左键是否按下
+
+    int m_direction;
+    int m_x1, m_x2;
+    bool judgeCrossing(const int end_x, const int end_y);
+    QRect getCrossing(int start_x, int start_y, int end_x, int end_y);
 
     AnnotationList *m_annotationList;
 

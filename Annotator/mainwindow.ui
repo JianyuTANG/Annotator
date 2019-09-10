@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1062</width>
-    <height>662</height>
+    <width>1380</width>
+    <height>998</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,14 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1061</width>
-      <height>571</height>
+      <width>1381</width>
+      <height>901</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <item>
       <layout class="QGridLayout" name="gridLayout"/>
      </item>
@@ -134,7 +137,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1062</width>
+     <width>1380</width>
      <height>26</height>
     </rect>
    </property>
