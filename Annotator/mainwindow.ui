@@ -156,6 +156,8 @@
     <addaction name="OpenFile"/>
     <addaction name="menu_2"/>
     <addaction name="action_2"/>
+    <addaction name="actionSave2"/>
+    <addaction name="actionReadAnnotation"/>
    </widget>
    <widget class="QMenu" name="edit_menu">
     <property name="title">
@@ -202,10 +204,16 @@
    <property name="text">
     <string>打开文件</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
   </action>
   <action name="action_2">
    <property name="text">
     <string>关闭</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSave">
@@ -217,9 +225,6 @@
    <property name="text">
     <string>Save</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
   </action>
   <action name="actionRectangle">
    <property name="icon">
@@ -228,6 +233,9 @@
    </property>
    <property name="text">
     <string>Rectangle</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionSquarePaint">
@@ -239,6 +247,9 @@
    <property name="text">
     <string>SquarePaint</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
   </action>
   <action name="actionRoundPaint">
    <property name="icon">
@@ -247,6 +258,9 @@
    </property>
    <property name="text">
     <string>RoundPaint</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionBack">
@@ -276,6 +290,9 @@
    <property name="text">
     <string>下一张</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionPrevious">
    <property name="enabled">
@@ -288,15 +305,40 @@
    <property name="text">
     <string>上一张</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="actionFolder2D">
    <property name="text">
     <string>打开2D图片</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
   </action>
   <action name="actionFolder3D">
    <property name="text">
     <string>打开3D图片</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
+   </property>
+  </action>
+  <action name="actionSave2">
+   <property name="text">
+    <string>保存</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionReadAnnotation">
+   <property name="text">
+    <string>读入标注</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

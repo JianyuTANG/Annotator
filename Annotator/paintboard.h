@@ -33,28 +33,28 @@ protected:
     void mouseMoveEvent(QMouseEvent *);      // 重写鼠标移动事件
 
 private:
+    // 状态
     int m_drawType;       // 当前画的图像类型
     bool m_leftPress;     // 鼠标左键是否按下
-
-    AnnotationList *m_annotationList;
-
     int m_width;
-    int m_color;
+    QColor m_color;
 
-    void changeColor();
-
-
+    // 控件
     QTextEdit m_inputAnnotation;
     QPushButton m_finishAnnotation, m_cancelAnnotation;
+    QTextBrowser *m_mousePos;
 
+    // 数据
     QPixmap *m_image;
     int m_image_x, m_image_y;
 
-    QTextBrowser *m_mousePos;
+    AnnotationList *m_annotationList;
+
 
     std::vector<int> m_shapes;
     std::vector<QRect> m_rects;
     std::vector<std::vector<QPoint>> m_areas;
+    std::vector<QColor> m_colors;
 
     void annotate(QMouseEvent *);
 
@@ -62,7 +62,7 @@ signals:
     void addItem(std::shared_ptr<Annotation>);
 
 public slots:
-    void drawShape(int);
+    void drawShape(int, QColor);
 
     void setWidth(int);  // 设置画笔宽度
 

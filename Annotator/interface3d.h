@@ -18,12 +18,17 @@ public:
                          QGridLayout *l = nullptr
             );
 
+    void loadAnnotation();
+
 private:
     QGridLayout *m_layout;
 
     PaintBoard3D *m_x, *m_y, *m_z;
 
+    QColor m_color;
+
     const std::vector<QPixmap*> *m_imageX, *m_imageY, *m_imageZ;
+    int m_currentx, m_currenty, m_currentz;
 
     AnnotationList *m_annotationList;
 
@@ -36,9 +41,13 @@ signals:
 public slots:
     void updateMousePosition(QString);
 
-    void drawShape(int);
+    void drawShape(int, QColor);
 
 private slots:
+    void changeImgX();
+    void changeImgY();
+    void changeImgZ();
+
     void mainFinish();
     void finalFinish();
 

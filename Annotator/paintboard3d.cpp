@@ -2,20 +2,33 @@
 #include <QMouseEvent>
 #include <QPaintDevice>
 #include <QPainter>
+#include <QDebug>
 
 PaintBoard3D::PaintBoard3D(QWidget *parent) :
     QWidget(parent),
     m_isMain(false),
     m_drawType(0),
     m_leftPress(false),
+    m_inputAnnotation(this),
+    m_cancelAnnotation(this),
+    m_finishAnnotation(this),
     m_direction(0)
 {
     setMouseTracking(true);
+
+    m_inputAnnotation.setVisible(false);
+    m_finishAnnotation.setVisible(false);
+    m_cancelAnnotation.setVisible(false);
+    connect(&m_finishAnnotation, SIGNAL(clicked()), this, SLOT(getAnnotation()));
+    connect(&m_cancelAnnotation, SIGNAL(clicked()), this, SLOT(cancelAnnotation()));
 }
 
 void PaintBoard3D::loadImage(QPixmap *p)
 {
     m_image = p;
+    m_image_x = p->width();
+    m_image_y = p->height();
+    update();
 }
 
 void PaintBoard3D::setDrawType(const int i)
@@ -23,11 +36,17 @@ void PaintBoard3D::setDrawType(const int i)
     m_drawType =i;
 }
 
+void PaintBoard3D::setColor(const QColor &c)
+{
+    m_color = c;
+}
+
 void PaintBoard3D::setTempRect(const int direction, const int x1, const int x2)
 {
     m_direction = direction;
     m_x1 =x1;
     m_x2= x2;
+    update();
 }
 
 const QRect &PaintBoard3D::getLastRect() const
@@ -46,10 +65,16 @@ void PaintBoard3D::addRect(const QRect &r)
     m_rects.push_back(r);
 }
 
+void PaintBoard3D::addColor(const QColor &c)
+{
+    m_colors.push_back(c);
+}
+
 void PaintBoard3D::deconfirm()
 {
     m_shapes.pop_back();
     m_rects.pop_back();
+    m_colors.pop_back();
 }
 
 void PaintBoard3D::paintEvent(QPaintEvent *e)
@@ -57,9 +82,11 @@ void PaintBoard3D::paintEvent(QPaintEvent *e)
     QPixmap pix(*m_image);
     QPainter p(&pix);
     unsigned int cursor[5] = {0};
+    unsigned int c = 0;
     for(int i:m_shapes)
     {
         p.setPen(Qt::RoundCap);
+        p.setPen(m_colors[c]);
         switch (i)
         {
         case 1:
@@ -84,21 +111,24 @@ void PaintBoard3D::paintEvent(QPaintEvent *e)
             }
             break;
         }
+        c++;
     }
 
     // 绘制检测任务临时框
     if(m_direction == 1)
     {
+        p.setPen(m_color);
         QRect rect;
         rect.setTopLeft(QPoint(0, m_x1));
-        rect.setBottomRight(QPoint(pix.width(), m_x2));
+        rect.setBottomRight(QPoint(pix.width() - 1, m_x2));
         p.drawRect(rect);
     }
     else if(m_direction == 2)
     {
+        p.setPen(m_color);
         QRect rect;
         rect.setTopLeft(QPoint(m_x1, 0));
-        rect.setBottomRight(QPoint(m_x2, pix.height()));
+        rect.setBottomRight(QPoint(m_x2, pix.height() - 1));
         p.drawRect(rect);
     }
 
@@ -118,6 +148,11 @@ void PaintBoard3D::mousePressEvent(QMouseEvent *e)
     }
     if(e->button() == Qt::LeftButton)
     {
+        if(m_drawType == 0)
+        {
+            emit changeImg();
+            return;
+        }
         changeColor();
         m_leftPress = true;
         if(m_drawType == 1)
@@ -126,6 +161,7 @@ void PaintBoard3D::mousePressEvent(QMouseEvent *e)
             QRect tempRect;
             m_rects.push_back(tempRect);
             m_shapes.push_back(1);
+            m_colors.push_back(m_color);
             QRect& lastRect = m_rects.back();
             lastRect.setTopLeft(e->pos());
             m_isMain = true;
@@ -137,9 +173,11 @@ void PaintBoard3D::mousePressEvent(QMouseEvent *e)
                 return;
             }
             // 矩形框标注
+            qDebug()<<2222;
             QRect tempRect;
             m_rects.push_back(tempRect);
             m_shapes.push_back(1);
+            m_colors.push_back(m_color);
             QRect& lastRect = m_rects.back();
             lastRect.setTopLeft(e->pos());
         }
@@ -169,6 +207,7 @@ void PaintBoard3D::mouseReleaseEvent(QMouseEvent *e)
                 // 松开区域不在图片上，标注无效
                 m_rects.pop_back();
                 m_shapes.pop_back();
+                m_colors.pop_back();
                 m_leftPress = false;
                 m_drawType = 0;
                 update();
@@ -179,11 +218,13 @@ void PaintBoard3D::mouseReleaseEvent(QMouseEvent *e)
             QRect& lastRect = m_rects.back();
             lastRect.setBottomRight(e->pos());
             m_leftPress = false;
+            m_drawType = 0;
 
             emit mainFinish();
 
             // 重绘
             update();
+            qDebug()<<4444;
         }
         else if(m_drawType == -1)
         {
@@ -257,6 +298,12 @@ void PaintBoard3D::mouseMoveEvent(QMouseEvent *e)
         if(m_drawType == 1)
         {
             // 矩形框标注
+            QRect& lastRect = m_rects.back();
+            lastRect.setBottomRight(e->pos());
+            update();
+        }
+        else if(m_drawType == -1)
+        {
             QRect& lastRect = m_rects.back();
             lastRect.setBottomRight(e->pos());
             update();
@@ -380,4 +427,18 @@ void PaintBoard3D::annotate(QMouseEvent *e)
     m_inputAnnotation.show();
     m_finishAnnotation.show();
     m_cancelAnnotation.show();
+}
+
+void PaintBoard3D::clearCurrentStatus()
+{
+    m_drawType = 0;
+    m_leftPress = false;
+    m_isMain = false;
+}
+
+void PaintBoard3D::clearData()
+{
+    m_shapes.clear();
+    m_rects.clear();
+    m_colors.clear();
 }

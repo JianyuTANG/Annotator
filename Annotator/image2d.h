@@ -19,6 +19,9 @@ public:
 
     QPixmap* getPixmap();
 
+    // 当前显示图片
+    QString m_filename;
+
 signals:
     void clearList();
 
@@ -26,9 +29,6 @@ public slots:
 
 
 private:
-    // 当前显示图片
-    QString m_filename;
-
     // 图片列表
     int m_currentFile;
     QString m_dir; // 路径

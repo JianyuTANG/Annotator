@@ -18,6 +18,8 @@ PaintBoard::PaintBoard(QWidget *parent, QPixmap *picture, QTextBrowser *showMous
     m_width(10),
     m_mousePos(showMousePos)
 {
+
+    // 初始相关不可见
     m_inputAnnotation.setVisible(false);
     m_finishAnnotation.setVisible(false);
     m_cancelAnnotation.setVisible(false);
@@ -52,6 +54,7 @@ void PaintBoard::loadAnnotation()
                            );
             m_rects.push_back(rect);
             m_shapes.push_back(1);
+            m_colors.push_back(temp->m_color);
         }
         else if(t->m_annotationType == 2 || t->m_annotationType == 3)
         {
@@ -60,6 +63,7 @@ void PaintBoard::loadAnnotation()
             std::vector<QPoint> line(temp->m_points);
             m_areas.push_back(line);
             m_shapes.push_back(t->m_annotationType);
+            m_colors.push_back(temp->m_color);
         }
     }
     update();
@@ -87,9 +91,11 @@ void PaintBoard::paintEvent(QPaintEvent *)
     QPixmap pix(*m_image);
     QPainter p(&pix);
     unsigned int cursor[5] = {0};
+    unsigned int c = 0;
     for(int i:m_shapes)
     {
         p.setPen(Qt::RoundCap);
+        p.setPen(m_colors[c]);
         switch (i)
         {
         case 1:
@@ -102,6 +108,7 @@ void PaintBoard::paintEvent(QPaintEvent *)
         }
         case 2:
             p.setPen(Qt::SquareCap);
+            p.setPen(m_colors[c]);
         case 3:
             QPen pen2(p.pen());
             pen2.setWidth(m_width);
@@ -114,6 +121,7 @@ void PaintBoard::paintEvent(QPaintEvent *)
             }
             break;
         }
+        c++;
     }
     p.end();
     p.begin(this);
@@ -131,7 +139,6 @@ void PaintBoard::mousePressEvent(QMouseEvent *e)
     }
     if(e->button() == Qt::LeftButton)
     {
-        changeColor();
         m_leftPress = true;
         if(m_drawType == 1)
         {
@@ -139,6 +146,7 @@ void PaintBoard::mousePressEvent(QMouseEvent *e)
             QRect tempRect;
             m_rects.push_back(tempRect);
             m_shapes.push_back(1);
+            m_colors.push_back(m_color);
             QRect& lastRect = m_rects.back();
             lastRect.setTopLeft(e->pos());
         }
@@ -147,6 +155,7 @@ void PaintBoard::mousePressEvent(QMouseEvent *e)
             // 涂抹分割标注
             std::vector<QPoint> line;
             m_areas.push_back(line);
+            m_colors.push_back(m_color);
             std::vector<QPoint>& lastLine = m_areas.back();
             lastLine.push_back(e->pos());
             m_shapes.push_back(m_drawType);
@@ -169,6 +178,7 @@ void PaintBoard::mouseReleaseEvent(QMouseEvent *e)
                 // 松开区域不在图片上，标注无效
                 m_rects.pop_back();
                 m_shapes.pop_back();
+                m_colors.pop_back();
                 m_leftPress = false;
                 m_drawType = 0;
                 update();
@@ -239,11 +249,6 @@ void PaintBoard::mouseMoveEvent(QMouseEvent *e)
     }
 }
 
-void PaintBoard::changeColor()
-{
-
-}
-
 void PaintBoard::annotate(QMouseEvent *e)
 {
     m_inputAnnotation.setGeometry(e->pos().x(), e->pos().y(), 100, 50);
@@ -256,10 +261,10 @@ void PaintBoard::annotate(QMouseEvent *e)
     m_cancelAnnotation.show();
 }
 
-void PaintBoard::drawShape(int i)
+void PaintBoard::drawShape(int i, QColor c)
 {
     m_drawType = i;
-    qDebug() << "6666";
+    m_color = c;
 }
 
 void PaintBoard::setWidth(int)
@@ -283,7 +288,7 @@ void PaintBoard::getAnnotation()
                                       lastRect.x() + lastRect.width(),
                                       lastRect.y() + lastRect.height(),
                                       annotation,
-                                      (m_shapes.size() - 1) % 20);
+                                      m_color);
         m_annotationList->addAnnotation(temp);
 
         // 向主界面状态栏列表加入标注信息
@@ -294,13 +299,12 @@ void PaintBoard::getAnnotation()
         const std::vector<QPoint>& lastLine = m_areas.back();
         std::shared_ptr<segmentation2d> temp = std::make_shared<segmentation2d>(lastLine,
                                                   annotation,
-                                                  (m_shapes.size() - 1) % 20,
+                                                  m_color,
                                                   m_drawType);
         m_annotationList->addAnnotation(temp);
 
         // 向主界面状态栏列表加入标注信息
         emit(addItem(temp));
-        qDebug()<<888;
     }
     m_drawType = 0;
 
@@ -325,7 +329,7 @@ void PaintBoard::cancelAnnotation()
     }
 
     m_shapes.pop_back();
-
+    m_colors.pop_back();
     m_drawType = 0;
     update();
 }

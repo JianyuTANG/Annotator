@@ -22,6 +22,8 @@ public:
 
     bool selectFolder();
 
+    QString m_dir; // 路径
+
     const std::vector<QPixmap*>* getX() const;
     const std::vector<QPixmap*>* getY() const;
     const std::vector<QPixmap*>* getZ() const;
@@ -34,7 +36,7 @@ public:
     const position fromZtoY(const int n, const int x, const int y) const;
 
 private:
-    QString m_dir; // 路径
+
     std::vector<QString> m_filenameList;  // 图片文件列表
 
     std::vector<QImage> m_imageListX, m_imageListY, m_imageListZ;

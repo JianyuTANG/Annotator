@@ -2,6 +2,9 @@
 #include <algorithm>
 #include <QDebug>
 #include <QPixmap>
+#include <QFile>
+#include <string>
+#include <sstream>
 
 
 AnnotationList::AnnotationList():QObject (), m_currentState(-1) {}
@@ -130,4 +133,133 @@ void AnnotationList::clear()
 const std::vector<std::shared_ptr<Annotation>> &AnnotationList::getList()
 {
     return m_list;
+}
+
+void AnnotationList::saveAsFile(QString filename)
+{
+    filename += ".txt";
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        return;
+    }
+    QTextStream stream(&file);
+    for(auto t:m_list)
+    {
+        stream << t->writeline() << "\n";
+    }
+    file.close();
+}
+
+void AnnotationList::loadFromFile(QString filename)
+{
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        return;
+    }
+    QTextStream in(&file);
+    QString line = in.readLine();
+    while(!line.isNull())
+    {
+        std::string t(line.toStdString());
+        std::stringstream ss(t);
+        int type;
+        ss >> type;
+        switch (type)
+        {
+        case 1:
+        {
+            int r, g, b;
+            ss >> r >> g >> b;
+            int tlx, tly, brx, bry;
+            ss >> tlx >> tly >> brx >> bry;
+            char name[200];
+            ss >> name;
+            std::shared_ptr<detect2d> temp = std::make_shared<detect2d>(tlx,
+                                                                        tly,
+                                                                        brx,
+                                                                        bry,
+                                                                        QString(name),
+                                                                        QColor(r, g, b));
+            m_list.push_back(temp);
+            emit addListItem(temp);
+            break;
+        }
+        case 2:
+        {
+            int r, g, b;
+            ss >> r >> g >> b;
+            std::vector<QPoint> qlist;
+            int x, y;
+            ss >> x;
+            while(x != -1000)
+            {
+                ss >> y;
+                QPoint p(x, y);
+                qlist.push_back(p);
+                ss >> x;
+            }
+            char name[200];
+            ss >> name;
+            std::shared_ptr<segmentation2d> temp = std::make_shared<segmentation2d>(qlist,
+                                                                                    QString(name),
+                                                                                    QColor(r, g, b),
+                                                                                    2);
+            m_list.push_back(temp);
+            emit addListItem(temp);
+            break;
+        }
+        case 3:
+        {
+            int r, g, b;
+            ss >> r >> g >> b;
+            std::vector<QPoint> qlist;
+            int x, y;
+            ss >> x;
+            while(x != -1000)
+            {
+                ss >> y;
+                QPoint p(x, y);
+                qlist.push_back(p);
+                ss >> x;
+            }
+            char name[200];
+            ss >> name;
+            std::shared_ptr<segmentation2d> temp = std::make_shared<segmentation2d>(qlist,
+                                                                                    QString(name),
+                                                                                    QColor(r, g, b),
+                                                                                    3);
+            m_list.push_back(temp);
+            emit addListItem(temp);
+            break;
+        }
+        case 4:
+        {
+            int r, g, b;
+            ss >> r >> g >> b;
+            QRect rect[3];
+            for(int k = 0; k < 3; k++)
+            {
+                int x, y, w, h;
+                ss >> x >> y >> w >> h;
+                rect[k] = QRect(x, y, w, h);
+            }
+            char name[200];
+            ss >> name;
+            std::shared_ptr<detect3d> temp = std::make_shared<detect3d>(rect[0],
+                          rect[1],
+                          rect[2],
+                          QString(name),
+                          QColor(r, g, b),
+                          4);
+            m_list.push_back(temp);
+            emit addListItem(temp);
+            break;
+        }
+        }
+        line = in.readLine();
+    }
+    file.close();
+
 }

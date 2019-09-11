@@ -24,60 +24,54 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-protected:
-    void paintEvent(QPaintEvent *);          // 重写窗体重绘事件
-    void mousePressEvent(QMouseEvent *);     // 重写鼠标按下事件
-    void mouseReleaseEvent(QMouseEvent *);   // 重写鼠标释放事件
-    void mouseMoveEvent(QMouseEvent *);      // 重写鼠标移动事件
 
 private:
     Ui::MainWindow *ui;
 
-    Image2D *m_image2d;
+    Image2D *m_image2d;  // 图像
     Image3D *m_image3d;
 
-    AnnotationList *m_annotationList;
+    AnnotationList *m_annotationList;  // 数据
 
     QPixmap m_pic2d;
     PaintBoard *m_paintBoard2d;
 
     Interface3D *m_interface3d;
 
-    int m_drawType;
-    bool m_leftPress;
-    int m_openStatus;
-
-    std::vector<int> m_record;
-
-    std::vector<int> m_shapes;
-    std::vector<QRect> m_rects;
+    int m_openStatus; // 状态
 
 signals:
-    void chooseShape2d(int);
-    void chooseShape3d(int);
+    // 选择绘制类型
+    void chooseShape2d(int, QColor);
+    void chooseShape3d(int, QColor);
 
 private slots:
+    // 文件操作
     void selectFile();
     void selectFolder();
     void selectFolder3D();
     void closeCurrent();
 
+    // 响应工具栏画图操作
     void drawRect();
     void drawAreaSquare();
     void drawAreaRound();
     void on_actionBack_triggered();
     void on_actionForward_triggered();
 
+    // 状态栏操作
     void addListItem(std::shared_ptr<Annotation>);
     void popListItem(int);
-
+    void updateMousePosition(QString);
     void on_listWidget_itemClicked(QListWidgetItem *item);
     void on_pushButton_clicked();
 
+    // 响应菜单事件
     void on_actionPrevious_triggered();
     void on_actionNext_triggered();
-
-    void updateMousePosition(QString);
+    void on_actionSave_triggered();
+    void on_actionReadAnnotation_triggered();
+    void on_action_2_triggered();
 
 public slots:
 

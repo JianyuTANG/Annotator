@@ -14,12 +14,17 @@ public:
     void loadImage(QPixmap *p);
 
     void setDrawType(const int i);
+    void setColor(const QColor& c);
 
     void setTempRect(const int direction, const int x1, const int x2);
     const QRect& getLastRect() const;
     int getLastShape() const;
     void addRect(const QRect &);
+    void addColor(const QColor&);
     void deconfirm();
+
+    void clearCurrentStatus();
+    void clearData();
 
     bool m_isMain;        // 当前投影图像是否是主操作图像
     int m_direction;
@@ -39,6 +44,10 @@ signals:
     void confirmAnnotation(QString);
     void deconfirmAnnotation();
 
+    void changeImg();
+
+
+
 public slots:
 
 private slots:
@@ -57,7 +66,7 @@ private:
     AnnotationList *m_annotationList;
 
     int m_width;
-    int m_color;
+    QColor m_color;
 
     void changeColor();
 
@@ -72,6 +81,7 @@ private:
 
     std::vector<int> m_shapes;
     std::vector<QRect> m_rects;
+    std::vector<QColor> m_colors;
     std::vector<std::vector<QPoint>> m_areas;
 
     void annotate(QMouseEvent *);

@@ -9,6 +9,8 @@
 #include <QListWidget>
 #include <QList>
 #include <QDebug>
+#include <QColorDialog>
+#include <QMessageBox>
 
 
 
@@ -17,10 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_image2d(nullptr),
     m_paintBoard2d(nullptr),
-    m_drawType(0),
-    m_leftPress(false),
     m_openStatus(0)
 {
+    // ui准备
     ui->setupUi(this);
     ui->label->setVisible(false);
     ui->label_2->setVisible(false);
@@ -29,13 +30,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton->setVisible(false);
 
 
+    // 初始化图像类
     m_image2d = new Image2D(this);
     m_image3d = new Image3D(this);
 
+    // 链接Action和槽
     connect(ui->OpenFile, SIGNAL(triggered()), this, SLOT(selectFile()));
     connect(ui->actionFolder2D, SIGNAL(triggered()), this, SLOT(selectFolder()));
     connect(ui->actionFolder3D, SIGNAL(triggered()), this, SLOT(selectFolder3D()));
+    connect(ui->actionSave2, SIGNAL(triggered()), this, SLOT(on_actionSave_triggered()));
 
+    // 画图操作的链接
     connect(ui->actionRectangle, SIGNAL(triggered()), this, SLOT(drawRect()));
     connect(ui->actionRoundPaint, SIGNAL(triggered()), this, SLOT(drawAreaRound()));
     connect(ui->actionSquarePaint, SIGNAL(triggered()), this, SLOT(drawAreaSquare()));
@@ -48,54 +53,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::paintEvent(QPaintEvent *)
-{
-}
-
-void MainWindow::mousePressEvent(QMouseEvent *e)
-{
-    if(e->button() == Qt::LeftButton)
-    {
-        if(m_openStatus == 0)
-        {
-            // 未打开图片的情况下所有标注无效
-            return;
-        }
-        m_leftPress = true;
-        if(m_drawType == 1)
-        {
-            // 矩形框标注
-            QRect tempRect;
-            m_rects.push_back(tempRect);
-            m_shapes.push_back(1);
-            m_record.push_back(1);
-            QRect& lastRect = m_rects.back();
-            lastRect.setTopLeft(e->pos());
-        }
-    }
-}
-
-void MainWindow::mouseReleaseEvent(QMouseEvent *e)
-{
-    if(m_leftPress)
-    {
-        if(m_drawType == 1)
-        {
-            // 矩形框标注
-            QRect& lastRect = m_rects.back();
-            lastRect.setBottomRight(e->pos());
-            m_leftPress = false;
-            update();
-        }
-        m_drawType = 0;
-    }
-}
-
-void MainWindow::mouseMoveEvent(QMouseEvent *e)
-{
-
-}
-
+// 直接打开2D
 void MainWindow::selectFile()
 {
     if(m_openStatus != 0)
@@ -131,12 +89,18 @@ void MainWindow::selectFile()
     m_paintBoard2d = new PaintBoard(this, m_image2d->getPixmap(), ui->textBrowser);
     m_paintBoard2d->registerAnnotationList(m_annotationList);
     ui->gridLayout->addWidget(m_paintBoard2d, 0, 0);
-    connect(this, SIGNAL(chooseShape2d(int)), m_paintBoard2d, SLOT(drawShape(int)));
+    connect(this, SIGNAL(chooseShape2d(int, QColor)), m_paintBoard2d, SLOT(drawShape(int, QColor)));
     connect(m_paintBoard2d, SIGNAL(addItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
+
+    QString filename(m_image2d->m_filename);
+    filename += ".txt";
+    m_annotationList->loadFromFile(filename);
+    m_paintBoard2d->loadAnnotation();
 
     m_openStatus = 1;
 }
 
+// 文件夹形式打开2D
 void MainWindow::selectFolder()
 {
     if(m_openStatus != 0)
@@ -162,12 +126,18 @@ void MainWindow::selectFolder()
     m_paintBoard2d = new PaintBoard(this, m_image2d->getPixmap(), ui->textBrowser);
     m_paintBoard2d->registerAnnotationList(m_annotationList);
     ui->gridLayout->addWidget(m_paintBoard2d, 0, 0);
-    connect(this, SIGNAL(chooseShape2d(int)), m_paintBoard2d, SLOT(drawShape(int)));
+    connect(this, SIGNAL(chooseShape2d(int, QColor)), m_paintBoard2d, SLOT(drawShape(int, QColor)));
     connect(m_paintBoard2d, SIGNAL(addItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
+
+    QString filename(m_image2d->m_filename);
+    filename += ".txt";
+    m_annotationList->loadFromFile(filename);
+    m_paintBoard2d->loadAnnotation();
 
     m_openStatus = 2;
 }
 
+// 打开3D图片
 void MainWindow::selectFolder3D()
 {
     if(m_openStatus != 0)
@@ -187,20 +157,31 @@ void MainWindow::selectFolder3D()
     ui->pushButton->setVisible(true);
     ui->listWidget->clear();
 
+    // 实例化数据
     m_annotationList = new AnnotationList;
+    connect(m_annotationList, SIGNAL(addListItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
+    connect(m_annotationList, SIGNAL(popListItem(int)), this, SLOT(popListItem(int)));
 
+    // 实例化交互面板
     m_interface3d = new Interface3D(this,
                                     m_image3d->getX(),
                                     m_image3d->getY(),
                                     m_image3d->getZ(),
                                     m_annotationList,
                                     ui->gridLayout);
-    connect(this, SIGNAL(chooseShape2d(int)), m_interface3d, SLOT(drawShape(int)));
+    connect(this, SIGNAL(chooseShape3d(int, QColor)), m_interface3d, SLOT(drawShape(int, QColor)));
     connect(m_interface3d, SIGNAL(mousePosition(QString)), this, SLOT(updateMousePosition(QString)));
+    connect(m_interface3d, SIGNAL(addItem(std::shared_ptr<Annotation>)), this, SLOT(addListItem(std::shared_ptr<Annotation>)));
+
+    QString filename(m_image3d->m_dir);
+    filename += "3d.txt";
+    m_annotationList->loadFromFile(filename);
+    m_interface3d->loadAnnotation();
 
     m_openStatus = 3;
 }
 
+// 关闭当前画板
 void MainWindow::closeCurrent()
 {
     ui->label->setVisible(false);
@@ -224,19 +205,24 @@ void MainWindow::closeCurrent()
         break;
 
     case 3:
+        delete m_interface3d;
+        delete m_annotationList;
         break;
     }
+    m_openStatus = 0;
 }
 
 void MainWindow::drawRect()
 {
     if(m_openStatus == 1 || m_openStatus == 2)
     {
-        emit chooseShape2d(1);
+        QColor color = QColorDialog::getColor(Qt::black, this);
+        emit chooseShape2d(1, color);
     }
     else if(m_openStatus == 3)
     {
-        emit chooseShape3d(1);
+        QColor color = QColorDialog::getColor(Qt::black, this);
+        emit chooseShape3d(1, color);
     }
 }
 
@@ -244,7 +230,8 @@ void MainWindow::drawAreaSquare()
 {
     if(m_openStatus == 1 || m_openStatus == 2)
     {
-        emit chooseShape2d(2);
+        QColor color = QColorDialog::getColor(Qt::black, this);
+        emit chooseShape2d(2, color);
     }
 }
 
@@ -252,7 +239,8 @@ void MainWindow::drawAreaRound()
 {
     if(m_openStatus == 1 || m_openStatus == 2)
     {
-        emit chooseShape2d(3);
+        QColor color = QColorDialog::getColor(Qt::black, this);
+        emit chooseShape2d(3, color);
     }
 }
 
@@ -265,6 +253,14 @@ void MainWindow::on_actionBack_triggered()
         if(m_annotationList->back())
         {
             m_paintBoard2d->loadAnnotation();
+        }
+    }
+    else
+    {
+        // 3D 图片的情况
+        if(m_annotationList->back())
+        {
+            m_interface3d->loadAnnotation();
         }
     }
 }
@@ -280,6 +276,14 @@ void MainWindow::on_actionForward_triggered()
             m_paintBoard2d->loadAnnotation();
         }
     }
+    else
+    {
+        // 3D 图片的情况
+        if(m_annotationList->forward())
+        {
+            m_interface3d->loadAnnotation();
+        }
+    }
 }
 
 
@@ -287,6 +291,7 @@ void MainWindow::addListItem(std::shared_ptr<Annotation> x)
 {
     AnnotationItem * item = new AnnotationItem;
     item->annotation = x;
+    item->setTextColor(x->m_color);
     item->setText(x->m_objectType);
     if(x->m_annotationType == 1)
     {
@@ -333,7 +338,14 @@ void MainWindow::on_pushButton_clicked()
     QListWidgetItem *currentItem = ui->listWidget->currentItem();
     std::shared_ptr<Annotation> recordItem = static_cast<AnnotationItem*>(currentItem)->annotation;
     m_annotationList->deleteAnnotation(recordItem);
-    m_paintBoard2d->loadAnnotation();
+    if(m_openStatus == 1 || m_openStatus == 2)
+    {
+        m_paintBoard2d->loadAnnotation();
+    }
+    else
+    {
+        m_interface3d->loadAnnotation();
+    }
     delete currentItem;
 }
 
@@ -353,6 +365,11 @@ void MainWindow::on_actionPrevious_triggered()
         m_annotationList->clear();
 
         ui->listWidget->clear();
+
+        QString filename(m_image2d->m_filename);
+        filename += ".txt";
+        m_annotationList->loadFromFile(filename);
+        m_paintBoard2d->loadAnnotation();
     }
 }
 
@@ -371,11 +388,48 @@ void MainWindow::on_actionNext_triggered()
         m_annotationList->clear();
 
         ui->listWidget->clear();
+
+        QString filename(m_image2d->m_filename);
+        filename += ".txt";
+        m_annotationList->loadFromFile(filename);
+        m_paintBoard2d->loadAnnotation();
     }
 }
 
 void MainWindow::updateMousePosition(QString s)
 {
-    qDebug()<<s;
     ui->textBrowser->setText(s);
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if(m_openStatus == 1 || m_openStatus == 2)
+    {
+        m_annotationList->saveAsFile(m_image2d->m_filename);
+    }
+    else if(m_openStatus == 3)
+    {
+        QString filename(m_image3d->m_dir);
+        filename += "3d.txt";
+        m_annotationList->saveAsFile(filename);
+    }
+}
+
+void MainWindow::on_actionReadAnnotation_triggered()
+{
+    if(m_openStatus == 0)
+    {
+        return;
+    }
+    QString filename = QFileDialog::getOpenFileName(
+                nullptr,
+                "打开文件",
+                "c:\\",
+                "*.txt");
+    m_annotationList->loadFromFile(filename);
+}
+
+void MainWindow::on_action_2_triggered()
+{
+    closeCurrent();
 }
