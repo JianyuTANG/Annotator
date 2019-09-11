@@ -29,9 +29,16 @@ private:
 
 signals:
     void mousePosition(QString);
+    void finish();
 
 public slots:
     void updateMousePosition(QString);
+
+    void drawShape(int);
+
+private slots:
+    void mainFinish();
+    void finalFinish();
 };
 
 #endif // INTERFACE3D_H

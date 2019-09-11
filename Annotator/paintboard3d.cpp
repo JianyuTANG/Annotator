@@ -18,6 +18,23 @@ void PaintBoard3D::loadImage(QPixmap *p)
     m_image = p;
 }
 
+void PaintBoard3D::setDrawType(const int i)
+{
+    m_drawType =i;
+}
+
+void PaintBoard3D::setTempRect(const int direction, const int x1, const int x2)
+{
+    m_direction = direction;
+    m_x1 =x1;
+    m_x2= x2;
+}
+
+const QRect &PaintBoard3D::getLastRect() const
+{
+    return m_rects.back();
+}
+
 void PaintBoard3D::paintEvent(QPaintEvent *e)
 {
     QPixmap pix(*m_image);
@@ -146,7 +163,7 @@ void PaintBoard3D::mouseReleaseEvent(QMouseEvent *e)
             lastRect.setBottomRight(e->pos());
             m_leftPress = false;
 
-            emit mainFinish(1);
+            emit mainFinish();
 
             // 重绘
             update();
@@ -180,10 +197,9 @@ void PaintBoard3D::mouseReleaseEvent(QMouseEvent *e)
             m_leftPress = false;
             m_drawType = 0;
             m_direction = 0;
-
+            emit finalFinish();
 
             update();
-            emit finalFinish();
 
             annotate(e);
         }
@@ -362,7 +378,6 @@ QRect PaintBoard3D::getCrossing(int start_x, int start_y, int end_x, int end_y)
 
 void PaintBoard3D::changeColor()
 {
-
 }
 
 void PaintBoard3D::annotate(QMouseEvent *e)

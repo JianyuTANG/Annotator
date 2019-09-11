@@ -13,6 +13,13 @@ public:
 
     void loadImage(QPixmap *p);
 
+    void setDrawType(const int i);
+
+    void setTempRect(const int direction, const int x1, const int x2);
+    const QRect& getLastRect() const;
+
+    bool m_isMain;        // 当前投影图像是否是主操作图像
+
 protected:
     void paintEvent(QPaintEvent *);          // 重写窗体重绘事件
     void mousePressEvent(QMouseEvent *);     // 重写鼠标按下事件
@@ -21,7 +28,7 @@ protected:
 
 signals:
     void addItem(std::shared_ptr<Annotation>);
-    void mainFinish(int);
+    void mainFinish();
     void finalFinish();
     void mousePos(QString);
 
@@ -32,7 +39,7 @@ private slots:
     void cancelAnnotation();
 
 private:
-    bool m_isMain;        // 当前投影图像是否是主操作图像
+
     int m_drawType;       // 当前画的图像类型
     bool m_leftPress;     // 鼠标左键是否按下
 

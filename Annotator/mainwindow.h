@@ -54,6 +54,7 @@ private:
 
 signals:
     void chooseShape2d(int);
+    void chooseShape3d(int);
 
 private slots:
     void selectFile();

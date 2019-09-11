@@ -195,6 +195,7 @@ void MainWindow::selectFolder3D()
                                     m_image3d->getZ(),
                                     m_annotationList,
                                     ui->gridLayout);
+    connect(this, SIGNAL(chooseShape2d(int)), m_interface3d, SLOT(drawShape(int)));
 
     m_openStatus = 3;
 }
@@ -231,6 +232,10 @@ void MainWindow::drawRect()
     if(m_openStatus == 1 || m_openStatus == 2)
     {
         emit chooseShape2d(1);
+    }
+    else if(m_openStatus == 3)
+    {
+        emit chooseShape3d(1);
     }
 }
 
