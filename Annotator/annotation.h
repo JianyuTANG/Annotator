@@ -3,6 +3,7 @@
 #include <QString>
 #include <vector>
 #include <QPoint>
+#include <QRect>
 
 class Annotation
 {
@@ -56,17 +57,13 @@ public:
 class detect3d: public Annotation
 {
 public:
-    int m_tlx, m_tly, m_tln, m_brx, m_bry, m_brn;
+    QRect m_x, m_y, m_z;
 
-    detect3d(const int tlx, const int tly, const int tln, const int brx, const int bry, const int brn,
-             const QString& type, const int c, const int shape):
+    detect3d(const QRect& x, const QRect& y, const QRect& z, const QString& type, const int c, const int shape):
         Annotation(shape, type),
-        m_tlx(tlx),
-        m_tly(tly),
-        m_tln(tln),
-        m_brx(brx),
-        m_bry(bry),
-        m_brn(brn) {}
+        m_x(x),
+        m_y(y),
+        m_z(z) {}
 };
 
 #endif // ANNOTATION_H

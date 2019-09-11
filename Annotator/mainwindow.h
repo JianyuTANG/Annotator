@@ -72,12 +72,12 @@ private slots:
     void popListItem(int);
 
     void on_listWidget_itemClicked(QListWidgetItem *item);
-
     void on_pushButton_clicked();
 
     void on_actionPrevious_triggered();
-
     void on_actionNext_triggered();
+
+    void updateMousePosition(QString);
 
 public slots:
 

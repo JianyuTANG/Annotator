@@ -10,7 +10,7 @@ PaintBoard3D::PaintBoard3D(QWidget *parent) :
     m_leftPress(false),
     m_direction(0)
 {
-
+    setMouseTracking(true);
 }
 
 void PaintBoard3D::loadImage(QPixmap *p)
@@ -33,6 +33,23 @@ void PaintBoard3D::setTempRect(const int direction, const int x1, const int x2)
 const QRect &PaintBoard3D::getLastRect() const
 {
     return m_rects.back();
+}
+
+int PaintBoard3D::getLastShape() const
+{
+    return m_shapes.back();
+}
+
+void PaintBoard3D::addRect(const QRect &r)
+{
+    m_shapes.push_back(1);
+    m_rects.push_back(r);
+}
+
+void PaintBoard3D::deconfirm()
+{
+    m_shapes.pop_back();
+    m_rects.pop_back();
 }
 
 void PaintBoard3D::paintEvent(QPaintEvent *e)
@@ -197,11 +214,12 @@ void PaintBoard3D::mouseReleaseEvent(QMouseEvent *e)
             m_leftPress = false;
             m_drawType = 0;
             m_direction = 0;
+            m_isMain = true;
             emit finalFinish();
 
-            update();
-
             annotate(e);
+
+            update();
         }
         else if(m_drawType == 2 || m_drawType == 3)
         {
@@ -265,21 +283,7 @@ void PaintBoard3D::getAnnotation()
     m_finishAnnotation.setVisible(false);
     m_cancelAnnotation.setVisible(false);
 
-    if(m_drawType == 1)
-    {
-        QRect& lastRect = m_rects.back();
-        std::shared_ptr<detect3d> temp = std::make_shared<detect3d>(lastRect.x(),
-                                      lastRect.y(),
-                                      lastRect.x() + lastRect.width(),
-                                      lastRect.y() + lastRect.height(),
-                                      annotation,
-                                      (m_shapes.size() - 1) % 20);
-
-        m_annotationList->addAnnotation(temp);
-
-        // 向主界面状态栏列表加入标注信息
-        emit(addItem(temp));
-    }
+    emit confirmAnnotation(annotation);
 }
 
 void PaintBoard3D::cancelAnnotation()
@@ -289,21 +293,7 @@ void PaintBoard3D::cancelAnnotation()
     m_finishAnnotation.setVisible(false);
     m_cancelAnnotation.setVisible(false);
 
-    switch (m_drawType)
-    {
-    case 1:
-        m_rects.pop_back();
-        break;
-    case 2:
-    case 3:
-        m_areas.pop_back();
-        break;
-    }
-
-    m_shapes.pop_back();
-
-    m_drawType = 0;
-    update();
+    emit deconfirmAnnotation();
 }
 
 bool PaintBoard3D::judgeCrossing(const int end_x, const int end_y)

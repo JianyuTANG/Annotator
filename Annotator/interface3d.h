@@ -31,6 +31,8 @@ signals:
     void mousePosition(QString);
     void finish();
 
+    void addItem(std::shared_ptr<Annotation>);
+
 public slots:
     void updateMousePosition(QString);
 
@@ -39,6 +41,9 @@ public slots:
 private slots:
     void mainFinish();
     void finalFinish();
+
+    void confirmAnnotation(QString);
+    void deconfirmAnnotation();
 };
 
 #endif // INTERFACE3D_H

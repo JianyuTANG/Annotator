@@ -196,6 +196,7 @@ void MainWindow::selectFolder3D()
                                     m_annotationList,
                                     ui->gridLayout);
     connect(this, SIGNAL(chooseShape2d(int)), m_interface3d, SLOT(drawShape(int)));
+    connect(m_interface3d, SIGNAL(mousePosition(QString)), this, SLOT(updateMousePosition(QString)));
 
     m_openStatus = 3;
 }
@@ -294,11 +295,18 @@ void MainWindow::addListItem(std::shared_ptr<Annotation> x)
     }
     else if(x->m_annotationType == 2)
     {
+        // 2D方形分割标注
         item->setIcon(QIcon(":/icon/icon/squarePaint.png"));
     }
     else if(x->m_annotationType == 3)
     {
+        // 2D圆形分割标注
         item->setIcon(QIcon(":/icon/icon/roundPaint.png"));
+    }
+    else if(x->m_annotationType == 4)
+    {
+        // 3D矩形检测标注
+        item->setIcon(QIcon(":/icon/icon/bigsquare.ico"));
     }
     qDebug()<<999;
     ui->listWidget->addItem(item);
@@ -364,4 +372,10 @@ void MainWindow::on_actionNext_triggered()
 
         ui->listWidget->clear();
     }
+}
+
+void MainWindow::updateMousePosition(QString s)
+{
+    qDebug()<<s;
+    ui->textBrowser->setText(s);
 }

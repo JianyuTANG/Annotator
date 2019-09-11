@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include "io.h"
 #include <string>
+#include <QDebug>
 
 
 Image3D::Image3D(QObject *parent) : QObject(parent)
@@ -19,11 +20,11 @@ bool Image3D::selectFolder()
                 );
 
     std::string search = m_dir.toStdString() + "/*.jpg";
-    const char *to_search = search.c_str();                      //在input文件夹下搜索jpg文件
+    const char *to_search = search.c_str();                     //在input文件夹下搜索jpg文件
     //qDebug() << to_search;
     long handle;                                                //用于查找的句柄
     struct _finddata_t fileinfo;                                //存储文件信息的结构体
-    handle = _findfirst(to_search, &fileinfo);                     //第一次查找
+    handle = _findfirst(to_search, &fileinfo);                  //第一次查找
     if(handle == -1)
     {
         //qDebug() << to_search;
@@ -136,6 +137,7 @@ void Image3D::load_image()
     int height = m_imageListX.size();
     auto format = m_imageListX[0].format();
     int len = m_imageListX[0].height();
+    qDebug()<<height;
     for(int i = 0; i < len; i++)
     {
         QImage temp(width, height, format);
